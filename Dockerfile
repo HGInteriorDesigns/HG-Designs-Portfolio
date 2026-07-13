@@ -1,6 +1,7 @@
 FROM composer:2.5 as build
 WORKDIR /app
 COPY . /app/
+RUN apk add --no-cache icu-dev && docker-php-ext-install intl
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 FROM php:8.1-apache
