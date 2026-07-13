@@ -4,7 +4,7 @@ COPY . /app/
 RUN apk add --no-cache icu-dev && docker-php-ext-install intl
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-FROM php:8.1
+FROM php:8.2
 # Install required extensions
 RUN apt-get update && apt-get install -y \
     libonig-dev \
