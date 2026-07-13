@@ -7,7 +7,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 FROM php:8.1-apache
 # Install required extensions
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
@@ -17,8 +16,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mysqli mbstring xml exif intl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
