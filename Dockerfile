@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mysqli mbstring xml exif intl
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mysqli mbstring xml exif intl
 
 # Set working directory
 WORKDIR /app

@@ -82,6 +82,16 @@ class Database extends Config
     {
         parent::__construct();
 
+        // Load database configuration from environment variables for Neon/PostgreSQL
+        if (getenv('DB_HOST')) {
+            $this->default['hostname'] = getenv('DB_HOST');
+            $this->default['username'] = getenv('DB_USERNAME');
+            $this->default['password'] = getenv('DB_PASSWORD');
+            $this->default['database'] = getenv('DB_DATABASE');
+            $this->default['DBDriver'] = getenv('DB_DRIVER') ?: 'Postgre';
+            $this->default['port'] = getenv('DB_PORT') ?: 5432;
+        }
+
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that
         // we don't overwrite live data on accident.
