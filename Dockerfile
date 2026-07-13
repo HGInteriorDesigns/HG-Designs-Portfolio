@@ -4,7 +4,7 @@ COPY . /app/
 RUN apk add --no-cache icu-dev && docker-php-ext-install intl
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-FROM php:8.1-apache
+FROM php:8.1-fpm
 # Install required extensions
 RUN apt-get update && apt-get install -y \
     libonig-dev \
@@ -12,13 +12,11 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libicu-dev \
+    nginx \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mysqli mbstring xml exif intl
-
-# Enable Apache mod_rewrite and fix MPM
-RUN a2dismod mpm_event && a2enmod mpm_prefork && a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
@@ -30,8 +28,9 @@ COPY --from=build /app /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/writable
 
-# Configure Apache
-RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/html\/public/' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's/<Directory \/var\/www\/html>/<Directory \/var\/www\/html\/public>/' /etc/apache2/sites-available/000-default.conf
-
+# Configure nginx
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 EXPOSE 80
+
+# Start php-fpm and nginx
+CMD php-fpm -D && nginx -g 'daemon off;'
