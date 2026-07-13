@@ -462,4 +462,14 @@ class App extends BaseConfig
      * @var bool
      */
     public $CSPEnabled = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Load app.baseURL from environment variable for production
+        if (getenv('app.baseURL')) {
+            $this->baseURL = getenv('app.baseURL');
+        }
+    }
 }
