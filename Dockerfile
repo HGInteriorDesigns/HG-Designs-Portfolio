@@ -30,7 +30,13 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Configure nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+php-fpm -D\n\
+nginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
+
 EXPOSE 80
 
-# Start php-fpm and nginx
-CMD php-fpm -D && nginx -g 'daemon off;'
+# Start services
+CMD ["/start.sh"]
