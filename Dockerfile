@@ -25,7 +25,7 @@ WORKDIR /app
 COPY --from=build /app /app
 
 # Set permissions
-RUN chmod -R 755 /app/writable
+RUN chmod -R 777 /app/writable
 
 # Enable error logging to file
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini \
