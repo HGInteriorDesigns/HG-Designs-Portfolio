@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="<?= base_url('style.css') ?>">
+    <link rel="stylesheet" href="/style.css">
     <style>
         body {
             display: flex;
@@ -67,7 +67,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="<?= base_url('admin/login') ?>" method="POST">
+        <form action="/admin/login" method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required placeholder="admin">
@@ -79,7 +79,7 @@
             <button type="submit" class="btn primary-btn btn-block">Sign In</button>
         </form>
 
-        <a href="<?= base_url() ?>" class="back-link"><i class="fa-solid fa-arrow-left-long"></i> Back to Portfolio</a>
+        <a href="/" class="back-link"><i class="fa-solid fa-arrow-left-long"></i> Back to Portfolio</a>
     </div>
 
 </body>

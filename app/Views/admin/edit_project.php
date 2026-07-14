@@ -81,22 +81,22 @@
 
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <a href="<?= base_url() ?>" class="logo">JATIN<span>.DESIGNS</span></a>
+            <a href="/" class="logo">JATIN<span>.DESIGNS</span></a>
             <small>Admin Dashboard</small>
         </div>
         <nav class="sidebar-nav">
-            <a href="<?= base_url('admin/dashboard') ?>"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-            <a href="<?= base_url('admin/dashboard') ?>#projects-section" class="active"><i class="fa-solid fa-image"></i> Projects</a>
-            <a href="<?= base_url() ?>" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Portfolio</a>
+            <a href="/admin/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="/admin/dashboard#projects-section" class="active"><i class="fa-solid fa-image"></i> Projects</a>
+            <a href="/" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Portfolio</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="<?= base_url('admin/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            <a href="/admin/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
     <div class="main-content">
         <div class="topbar">
-            <a href="<?= base_url('admin/dashboard') ?>" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Back</a>
+            <a href="/admin/dashboard" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Back</a>
             <h1><?= $isEdit ? 'Edit Project' : 'Add New Project' ?></h1>
         </div>
 
@@ -117,7 +117,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
 
-                    <form action="<?= $isEdit ? base_url('admin/project/' . $project['id']) : base_url('admin/project/add') ?>" method="POST" enctype="multipart/form-data">
+                    <form action="<?= $isEdit ? '/admin/project/' . $project['id'] : '/admin/project/add' ?>" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="title">Room / Space Title</label>
@@ -170,9 +170,9 @@
                                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;">
                                             <?php foreach ($project['images'] as $image): ?>
                                                 <div style="position: relative;">
-                                                    <img src="<?= base_url(esc($image['image_path'])) ?>" alt="<?= esc($image['caption'] ?? 'Project image') ?>" 
+                                                    <img src="/<?= esc($image['image_path']) ?>" alt="<?= esc($image['caption'] ?? 'Project image') ?>" 
                                                          style="width: 100%; height: 90px; object-fit: cover; border-radius: 3px; border: 1px solid var(--border);">
-                                                    <a href="<?= base_url('admin/delete-image/' . $image['id']) ?>" 
+                                                    <a href="/admin/delete-image/<?= $image['id'] ?>" 
                                                        style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: #FFF; 
                                                               width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; 
                                                               justify-content: center; text-decoration: none; font-size: 0.75rem;"
@@ -208,7 +208,7 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> <?= $isEdit ? 'Save Changes' : 'Create Project' ?></button>
-                            <a href="<?= base_url('admin/dashboard') ?>" class="btn btn-outline"><i class="fa-solid fa-xmark"></i> Cancel</a>
+                            <a href="/admin/dashboard" class="btn btn-outline"><i class="fa-solid fa-xmark"></i> Cancel</a>
                         </div>
                     </form>
                 </div>

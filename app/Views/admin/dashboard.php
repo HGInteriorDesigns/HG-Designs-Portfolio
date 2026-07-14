@@ -293,7 +293,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <a href="<?= base_url() ?>" class="logo">JATIN<span>.DESIGNS</span></a>
+            <a href="/" class="logo">JATIN<span>.DESIGNS</span></a>
             <small>Admin Dashboard</small>
         </div>
         <nav class="sidebar-nav">
@@ -308,10 +308,10 @@
             </a>
 
             <div class="sidebar-nav-section">Portfolio</div>
-            <a href="<?= base_url() ?>" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Portfolio</a>
+            <a href="/" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Portfolio</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="<?= base_url('admin/logout') ?>"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            <a href="/admin/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
@@ -366,7 +366,7 @@
                         <span style="font-size: 0.8rem; color: var(--text-muted);">Changes reflect instantly on the public website.</span>
                     </div>
                     <div class="section-body">
-                        <form action="<?= base_url('admin/save-settings') ?>" method="POST">
+                        <form action="/admin/save-settings" method="POST">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="s-email">Contact Email</label>
@@ -414,7 +414,7 @@
                 <div class="section-card">
                     <div class="section-header">
                         <h2>Projects</h2>
-                        <a href="<?= base_url('admin/project/add') ?>" class="btn btn-accent btn-sm"><i class="fa-solid fa-plus"></i> New Project</a>
+                        <a href="/admin/project/add" class="btn btn-accent btn-sm"><i class="fa-solid fa-plus"></i> New Project</a>
                     </div>
                     <div class="section-body" style="padding: 0;">
                         <?php if (!empty($projects)): ?>
@@ -433,7 +433,7 @@
                                 <?php foreach ($projects as $project): ?>
                                 <tr>
                                     <td>
-                                        <img src="<?= base_url(esc($project['image_after'])) ?>" alt="" class="table-thumb">
+                                        <img src="/<?= esc($project['image_after']) ?>" alt="" class="table-thumb">
                                     </td>
                                     <td><strong><?= esc($project['title']) ?></strong><br><small style="color: var(--text-muted)"><?= esc($project['slug']) ?></small></td>
                                     <td><?= esc($project['area']) ?></td>
@@ -441,8 +441,8 @@
                                     <td style="max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= esc($project['materials']) ?></td>
                                     <td>
                                         <div class="table-actions">
-                                            <a href="<?= base_url('admin/project/' . $project['id']) ?>" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Edit</a>
-                                            <a href="<?= base_url('admin/project/delete/' . $project['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this project?')"><i class="fa-solid fa-trash"></i></a>
+                                            <a href="/admin/project/<?= $project['id'] ?>" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Edit</a>
+                                            <a href="/admin/project/delete/<?= $project['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this project?')"><i class="fa-solid fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -452,7 +452,7 @@
                         <?php else: ?>
                         <div class="empty-state">
                             <i class="fa-solid fa-image"></i>
-                            <p>No projects yet. <a href="<?= base_url('admin/project/add') ?>">Add your first project.</a></p>
+                            <p>No projects yet. <a href="/admin/project/add">Add your first project.</a></p>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -488,7 +488,7 @@
                                     <td style="max-width: 280px;"><?= nl2br(esc($msg['message'])) ?></td>
                                     <td style="white-space: nowrap; color: var(--text-muted);"><?= esc($msg['created_at']) ?></td>
                                     <td>
-                                        <a href="<?= base_url('admin/message/delete/' . $msg['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this message?')"><i class="fa-solid fa-trash"></i></a>
+                                        <a href="/admin/message/delete/<?= $msg['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this message?')"><i class="fa-solid fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
