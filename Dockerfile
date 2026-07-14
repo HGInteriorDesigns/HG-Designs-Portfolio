@@ -26,6 +26,10 @@ COPY --from=build /app /app
 # Set permissions
 RUN chmod -R 755 /app/writable
 
+# Enable error display for debugging
+RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini \
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini
+
 EXPOSE 8080
 
 # Start PHP built-in server
