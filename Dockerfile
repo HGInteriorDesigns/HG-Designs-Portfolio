@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libicu-dev \
+    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
