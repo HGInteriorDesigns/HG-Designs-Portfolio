@@ -14,13 +14,8 @@ class Home extends BaseController
             $settingsModel = new SettingsModel();
             $projectModel  = new ProjectModel();
 
-            // Try to get projects with images (new schema)
-            try {
-                $projects = $projectModel->getAllWithImages();
-            } catch (\Exception $e) {
-                // Fallback to old schema if project_images table doesn't exist
-                $projects = $projectModel->findAll();
-            }
+            // Use simple findAll to avoid schema issues
+            $projects = $projectModel->findAll();
 
             $data = [
                 'settings' => $settingsModel->first(),
