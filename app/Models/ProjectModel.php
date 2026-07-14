@@ -18,7 +18,9 @@ class ProjectModel extends Model
         'area',
         'location_name',
         'materials',
-        'category'
+        'category',
+        'image_after',
+        'image_before'
     ];
 
     /**

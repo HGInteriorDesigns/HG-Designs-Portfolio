@@ -115,12 +115,13 @@
                             <div class="tab-content <?= $index === 0 ? 'active' : '' ?>" id="<?= esc($project['slug']) ?>">
                                 
                                 <?php 
-                                // Check if project has both before and after images
+                                // Check if project has both before and after images (new schema)
                                 $hasBefore = false;
                                 $hasAfter = false;
                                 $beforeImage = null;
                                 $afterImage = null;
                                 
+                                // Try new schema first
                                 if (!empty($project['images'])) {
                                     foreach ($project['images'] as $img) {
                                         if ($img['image_type'] === 'before') {
@@ -131,6 +132,18 @@
                                             $hasAfter = true;
                                             $afterImage = $img;
                                         }
+                                    }
+                                }
+                                
+                                // Fallback to old schema
+                                if (!$hasBefore && !$hasAfter) {
+                                    if (!empty($project['image_before'])) {
+                                        $hasBefore = true;
+                                        $beforeImage = ['image_path' => $project['image_before']];
+                                    }
+                                    if (!empty($project['image_after'])) {
+                                        $hasAfter = true;
+                                        $afterImage = ['image_path' => $project['image_after']];
                                     }
                                 }
                                 ?>
