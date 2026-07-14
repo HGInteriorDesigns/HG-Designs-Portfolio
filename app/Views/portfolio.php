@@ -12,7 +12,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="<?= base_url('home.css') ?>">
+    <link rel="stylesheet" href="/home.css">
 </head>
 <body>
 

@@ -10,29 +10,48 @@ class Home extends BaseController
 {
     public function index()
     {
-        $settingsModel = new SettingsModel();
-        $projectModel  = new ProjectModel();
+        try {
+            $settingsModel = new SettingsModel();
+            $projectModel  = new ProjectModel();
 
-        $data = [
-            'settings' => $settingsModel->first(),
-            'projects' => $projectModel->findAll(),
-        ];
-
-        // Fallback default settings if db is empty for some reason
-        if (!$data['settings']) {
-            $data['settings'] = [
-                'tagline'     => 'Crafting spaces that tell your story.',
-                'description' => 'Specializing in warm minimalist and Japandi designs that blend high functionality with natural textures.',
-                'about_lead'  => 'My journey into interior design began with a simple belief.',
-                'about_body'  => 'I design with restraint, focusing on clean lines, organic textures.',
-                'about_quote' => 'The details are not the details. They make the design.',
-                'about_cite'  => '— Charles Eames',
-                'email'       => 'hello@jatin.designs',
-                'location'    => 'New Delhi, India'
+            $data = [
+                'settings' => $settingsModel->first(),
+                'projects' => $projectModel->findAll(),
             ];
-        }
 
-        return view('portfolio', $data);
+            // Fallback default settings if db is empty for some reason
+            if (!$data['settings']) {
+                $data['settings'] = [
+                    'tagline'     => 'Crafting spaces that tell your story.',
+                    'description' => 'Specializing in warm minimalist and Japandi designs that blend high functionality with natural textures.',
+                    'about_lead'  => 'My journey into interior design began with a simple belief.',
+                    'about_body'  => 'I design with restraint, focusing on clean lines, organic textures.',
+                    'about_quote' => 'The details are not the details. They make the design.',
+                    'about_cite'  => '— Charles Eames',
+                    'email'       => 'hello@jatin.designs',
+                    'location'    => 'New Delhi, India'
+                ];
+            }
+
+            return view('portfolio', $data);
+        } catch (\Exception $e) {
+            // If database fails, use fallback data
+            $data = [
+                'settings' => [
+                    'tagline'     => 'Crafting spaces that tell your story.',
+                    'description' => 'Specializing in warm minimalist and Japandi designs that blend high functionality with natural textures.',
+                    'about_lead'  => 'My journey into interior design began with a simple belief.',
+                    'about_body'  => 'I design with restraint, focusing on clean lines, organic textures.',
+                    'about_quote' => 'The details are not the details. They make the design.',
+                    'about_cite'  => '— Charles Eames',
+                    'email'       => 'hello@jatin.designs',
+                    'location'    => 'New Delhi, India'
+                ],
+                'projects' => []
+            ];
+
+            return view('portfolio', $data);
+        }
     }
 
     public function submitContact()
