@@ -23,6 +23,7 @@ class DatabaseSetup
             $pdo->exec("DROP TABLE IF EXISTS users");
             $pdo->exec("DROP TABLE IF EXISTS settings");
             $pdo->exec("DROP TABLE IF EXISTS projects");
+            $pdo->exec("DROP TABLE IF EXISTS project_images");
             $pdo->exec("DROP TABLE IF EXISTS messages");
 
             // 2. Create Users table
@@ -54,11 +55,23 @@ class DatabaseSetup
                 area TEXT,
                 location_name TEXT,
                 materials TEXT,
-                image_after TEXT,
-                image_before TEXT
+                category TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )");
 
-            // 5. Create Messages table
+            // 5. Create Project Images table
+            $pdo->exec("CREATE TABLE project_images (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                project_id INTEGER NOT NULL,
+                image_path TEXT NOT NULL,
+                image_type TEXT DEFAULT 'after',
+                caption TEXT,
+                sort_order INTEGER DEFAULT 0,
+                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+            )");
+
+            // 6. Create Messages table
             $pdo->exec("CREATE TABLE messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
@@ -88,7 +101,7 @@ class DatabaseSetup
             ]);
 
             // 8. Insert Default Projects
-            $stmt = $pdo->prepare("INSERT INTO projects (slug, title, description, area, location_name, materials, image_after, image_before) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO projects (slug, title, description, area, location_name, materials, category) VALUES (?, ?, ?, ?, ?, ?, ?)");
             
             // Living Room
             $stmt->execute([
@@ -98,8 +111,7 @@ class DatabaseSetup
                 '450 sq. ft.',
                 'Urban Heights',
                 'White Oak, Linen, Bouclé, Travertine',
-                'assets/hero_living_room.png',
-                'assets/before_living_room.png'
+                'living'
             ]);
 
             // Kitchen
@@ -110,8 +122,7 @@ class DatabaseSetup
                 '250 sq. ft.',
                 'Urban Heights',
                 'Oak, Carrara Marble, Brushed Brass',
-                'assets/kitchen_design.png',
-                null
+                'kitchen'
             ]);
 
             // Bedroom
@@ -122,9 +133,21 @@ class DatabaseSetup
                 '320 sq. ft.',
                 'Urban Heights',
                 'Linen, Natural Pine, Plaster, Washi Paper',
-                'assets/bedroom_design.png',
-                null
+                'bedroom'
             ]);
+
+            // 9. Insert Default Project Images
+            $imageStmt = $pdo->prepare("INSERT INTO project_images (project_id, image_path, image_type, caption, sort_order) VALUES (?, ?, ?, ?, ?)");
+            
+            // Living Room images
+            $imageStmt->execute([1, 'assets/hero_living_room.png', 'after', 'After: Warm minimalist living room', 1]);
+            $imageStmt->execute([1, 'assets/before_living_room.png', 'before', 'Before: Original concrete space', 2]);
+            
+            // Kitchen images
+            $imageStmt->execute([2, 'assets/kitchen_design.png', 'after', 'After: Modern kitchen with oak cabinetry', 1]);
+            
+            // Bedroom images
+            $imageStmt->execute([3, 'assets/bedroom_design.png', 'after', 'After: Serene minimalist bedroom', 1]);
 
             echo "Database initialized and seeded successfully!\n";
         } catch (\PDOException $e) {

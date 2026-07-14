@@ -114,15 +114,36 @@
                             <!-- <?= esc($project['title']) ?> Tab -->
                             <div class="tab-content <?= $index === 0 ? 'active' : '' ?>" id="<?= esc($project['slug']) ?>">
                                 
-                                <?php if (!empty($project['image_before'])): ?>
+                                <?php 
+                                // Check if project has both before and after images
+                                $hasBefore = false;
+                                $hasAfter = false;
+                                $beforeImage = null;
+                                $afterImage = null;
+                                
+                                if (!empty($project['images'])) {
+                                    foreach ($project['images'] as $img) {
+                                        if ($img['image_type'] === 'before') {
+                                            $hasBefore = true;
+                                            $beforeImage = $img;
+                                        }
+                                        if ($img['image_type'] === 'after') {
+                                            $hasAfter = true;
+                                            $afterImage = $img;
+                                        }
+                                    }
+                                }
+                                ?>
+                                
+                                <?php if ($hasBefore && $hasAfter): ?>
                                     <!-- Before / After Slider -->
                                     <div class="slider-wrapper">
                                         <div class="before-after-slider ba-slider-instance">
                                             <!-- After Image (Background) -->
-                                            <img src="<?= base_url(esc($project['image_after'])) ?>" alt="After: <?= esc($project['title']) ?>" class="after-image">
+                                            <img src="<?= base_url(esc($afterImage['image_path'])) ?>" alt="After: <?= esc($project['title']) ?>" class="after-image">
                                             <!-- Before Image (Overlay) -->
                                             <div class="before-image-wrapper before-img-wrap-instance">
-                                                <img src="<?= base_url(esc($project['image_before'])) ?>" alt="Before: <?= esc($project['title']) ?>" class="before-image">
+                                                <img src="<?= base_url(esc($beforeImage['image_path'])) ?>" alt="Before: <?= esc($project['title']) ?>" class="before-image">
                                             </div>
                                             <!-- Divider Slider Handle -->
                                             <div class="slider-handle slider-handle-instance">
@@ -137,10 +158,17 @@
                                         </div>
                                         <p class="slider-hint"><i class="fa-solid fa-hand-pointer"></i> Drag the slider to compare Before & After</p>
                                     </div>
-                                <?php else: ?>
-                                    <!-- Regular Single Image -->
+                                <?php elseif (!empty($project['images'])): ?>
+                                    <!-- Image Gallery -->
                                     <div class="project-gallery-image">
-                                        <img src="<?= base_url(esc($project['image_after'])) ?>" alt="<?= esc($project['title']) ?>">
+                                        <?php foreach ($project['images'] as $img): ?>
+                                            <img src="<?= base_url(esc($img['image_path'])) ?>" alt="<?= esc($img['caption'] ?? $project['title']) ?>" style="margin-bottom: 10px;">
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <!-- No Images Placeholder -->
+                                    <div class="project-gallery-image" style="background: #f5f5f5; height: 300px; display: flex; align-items: center; justify-content: center;">
+                                        <p style="color: #999;">No images available for this project</p>
                                     </div>
                                 <?php endif; ?>
 

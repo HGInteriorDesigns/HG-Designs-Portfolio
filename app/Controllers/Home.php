@@ -16,7 +16,7 @@ class Home extends BaseController
 
             $data = [
                 'settings' => $settingsModel->first(),
-                'projects' => $projectModel->findAll(),
+                'projects' => $projectModel->getAllWithImages(),
             ];
 
             // Fallback default settings if db is empty for some reason

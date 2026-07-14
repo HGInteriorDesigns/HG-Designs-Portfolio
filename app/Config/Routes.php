@@ -52,6 +52,7 @@ $routes->post('admin/project/add',          'Admin::editProject');
 $routes->get('admin/project/(:num)',        'Admin::editProject/$1');
 $routes->post('admin/project/(:num)',       'Admin::editProject/$1');
 $routes->get('admin/project/delete/(:num)', 'Admin::deleteProject/$1');
+$routes->get('admin/delete-image/(:num)',   'Admin::deleteProjectImage/$1');
 
 // Message management
 $routes->get('admin/message/delete/(:num)', 'Admin::deleteMessage/$1');

@@ -136,6 +136,19 @@
                                 <label for="location_name">Location</label>
                                 <input type="text" id="location_name" name="location_name" value="<?= esc($project['location_name'] ?? '') ?>" placeholder="e.g. Urban Heights" required>
                             </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="living" <?= ($project['category'] ?? '') === 'living' ? 'selected' : '' ?>>Living Room</option>
+                                    <option value="kitchen" <?= ($project['category'] ?? '') === 'kitchen' ? 'selected' : '' ?>>Kitchen</option>
+                                    <option value="bedroom" <?= ($project['category'] ?? '') === 'bedroom' ? 'selected' : '' ?>>Bedroom</option>
+                                    <option value="bathroom" <?= ($project['category'] ?? '') === 'bathroom' ? 'selected' : '' ?>>Bathroom</option>
+                                    <option value="office" <?= ($project['category'] ?? '') === 'office' ? 'selected' : '' ?>>Office</option>
+                                    <option value="outdoor" <?= ($project['category'] ?? '') === 'outdoor' ? 'selected' : '' ?>>Outdoor</option>
+                                    <option value="other" <?= ($project['category'] ?? '') === 'other' ? 'selected' : '' ?>>Other</option>
+                                </select>
+                            </div>
                             <div class="form-group full-width">
                                 <label for="materials">Materials Used</label>
                                 <input type="text" id="materials" name="materials" value="<?= esc($project['materials'] ?? '') ?>" placeholder="e.g. White Oak, Linen, Bouclé, Travertine" required>
@@ -145,30 +158,51 @@
                                 <textarea id="description" name="description" rows="4" required placeholder="Describe the design concept and materials..."><?= esc($project['description'] ?? '') ?></textarea>
                             </div>
 
-                            <!-- Image After Upload -->
-                            <div class="form-group">
-                                <label for="image_after">After Image <?= $isEdit ? '(leave blank to keep current)' : '(required)' ?></label>
-                                <input type="file" id="image_after" name="image_after" accept="image/*">
-                                <?php if ($isEdit && !empty($project['image_after'])): ?>
-                                    <div class="current-img">
-                                        <img src="<?= base_url(esc($project['image_after'])) ?>" alt="Current After Image">
-                                        <span>Current: <?= esc(basename($project['image_after'])) ?></span>
+                            <!-- Multiple Image Upload -->
+                            <div class="form-group full-width">
+                                <label for="images">Project Images</label>
+                                <input type="file" id="images" name="images[]" accept="image/*" multiple>
+                                <span class="hint">You can upload multiple images. They will be displayed in the order uploaded.</span>
+                                
+                                <?php if ($isEdit && !empty($project['images'])): ?>
+                                    <div style="margin-top: 16px;">
+                                        <label style="margin-bottom: 8px;">Current Images:</label>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;">
+                                            <?php foreach ($project['images'] as $image): ?>
+                                                <div style="position: relative;">
+                                                    <img src="<?= base_url(esc($image['image_path'])) ?>" alt="<?= esc($image['caption'] ?? 'Project image') ?>" 
+                                                         style="width: 100%; height: 90px; object-fit: cover; border-radius: 3px; border: 1px solid var(--border);">
+                                                    <a href="<?= base_url('admin/delete-image/' . $image['id']) ?>" 
+                                                       style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: #FFF; 
+                                                              width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; 
+                                                              justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                                       onclick="return confirm('Delete this image?')">
+                                                        <i class="fa-solid fa-times"></i>
+                                                    </a>
+                                                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <?= esc($image['caption'] ?? 'No caption') ?>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Image Before Upload -->
+                            <!-- Image Type and Caption (for new uploads) -->
                             <div class="form-group">
-                                <label for="image_before">Before Image <small style="color:var(--text-muted)">(optional — enables Before/After slider)</small></label>
-                                <input type="file" id="image_before" name="image_before" accept="image/*">
-                                <?php if ($isEdit && !empty($project['image_before'])): ?>
-                                    <div class="current-img">
-                                        <img src="<?= base_url(esc($project['image_before'])) ?>" alt="Current Before Image">
-                                        <span>Current: <?= esc(basename($project['image_before'])) ?></span>
-                                    </div>
-                                <?php else: ?>
-                                    <span class="hint">If provided, a Before/After drag slider will appear on the portfolio.</span>
-                                <?php endif; ?>
+                                <label for="image_type">Default Image Type</label>
+                                <select id="image_type" name="image_type">
+                                    <option value="after">After (Final Design)</option>
+                                    <option value="before">Before (Original)</option>
+                                    <option value="detail">Detail Shot</option>
+                                </select>
+                                <span class="hint">This will be applied to all uploaded images</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="caption">Image Caption (optional)</label>
+                                <input type="text" id="caption" name="caption" placeholder="e.g. After: Warm minimalist living room">
+                                <span class="hint">This caption will be applied to all uploaded images</span>
                             </div>
                         </div>
 

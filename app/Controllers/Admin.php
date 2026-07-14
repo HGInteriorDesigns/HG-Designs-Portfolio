@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\SettingsModel;
 use App\Models\ProjectModel;
+use App\Models\ProjectImageModel;
 use App\Models\MessageModel;
 use App\Models\UserModel;
 
@@ -120,10 +121,11 @@ class Admin extends BaseController
         }
 
         $projectModel = new ProjectModel();
+        $projectImageModel = new ProjectImageModel();
         $project = null;
 
         if ($id !== null) {
-            $project = $projectModel->find($id);
+            $project = $projectModel->getProjectWithImages($id);
             if (!$project) {
                 $this->session->setFlashdata('error', 'Project not found.');
                 return redirect()->to(base_url('admin/dashboard'));
@@ -144,6 +146,7 @@ class Admin extends BaseController
                 'area'          => 'required',
                 'location_name' => 'required',
                 'materials'     => 'required',
+                'category'      => 'required',
             ];
 
             if ($this->validate($rules)) {
@@ -154,33 +157,41 @@ class Admin extends BaseController
                     'area'          => $this->request->getPost('area'),
                     'location_name' => $this->request->getPost('location_name'),
                     'materials'     => $this->request->getPost('materials'),
+                    'category'      => $this->request->getPost('category'),
                 ];
-
-                // Handle Image After Upload
-                $imgAfter = $this->request->getFile('image_after');
-                if ($imgAfter && $imgAfter->isValid() && !$imgAfter->hasMoved()) {
-                    $newName = $imgAfter->getRandomName();
-                    $imgAfter->move(FCPATH . 'assets', $newName);
-                    $saveData['image_after'] = 'assets/' . $newName;
-                } elseif ($project) {
-                    $saveData['image_after'] = $project['image_after'];
-                }
-
-                // Handle Image Before Upload
-                $imgBefore = $this->request->getFile('image_before');
-                if ($imgBefore && $imgBefore->isValid() && !$imgBefore->hasMoved()) {
-                    $newName = $imgBefore->getRandomName();
-                    $imgBefore->move(FCPATH . 'assets', $newName);
-                    $saveData['image_before'] = 'assets/' . $newName;
-                } elseif ($project) {
-                    $saveData['image_before'] = $project['image_before'];
-                }
 
                 if ($id !== null) {
                     $projectModel->update($id, $saveData);
+                    $projectId = $id;
+                } else {
+                    $projectId = $projectModel->insert($saveData);
+                }
+
+                // Handle multiple image uploads
+                $images = $this->request->getFiles('images');
+                if ($images) {
+                    $sortOrder = 1;
+                    foreach ($images as $image) {
+                        if ($image && $image->isValid() && !$image->hasMoved()) {
+                            $newName = $image->getRandomName();
+                            $image->move(FCPATH . 'assets', $newName);
+                            
+                            $imageData = [
+                                'project_id'  => $projectId,
+                                'image_path'  => 'assets/' . $newName,
+                                'image_type'  => $this->request->getPost('image_type') ?: 'after',
+                                'caption'     => $this->request->getPost('caption') ?: '',
+                                'sort_order'  => $sortOrder++
+                            ];
+                            
+                            $projectImageModel->insert($imageData);
+                        }
+                    }
+                }
+
+                if ($id !== null) {
                     $this->session->setFlashdata('success', 'Project updated successfully.');
                 } else {
-                    $projectModel->insert($saveData);
                     $this->session->setFlashdata('success', 'Project created successfully.');
                 }
 
@@ -200,11 +211,41 @@ class Admin extends BaseController
         }
 
         $projectModel = new ProjectModel();
+        $projectImageModel = new ProjectImageModel();
+        
         if ($projectModel->find($id)) {
+            // Delete associated images
+            $projectImageModel->deleteProjectImages($id);
+            // Delete project
             $projectModel->delete($id);
             $this->session->setFlashdata('success', 'Project deleted successfully.');
         } else {
             $this->session->setFlashdata('error', 'Project not found.');
+        }
+
+        return redirect()->to(base_url('admin/dashboard'));
+    }
+
+    public function deleteProjectImage($imageId)
+    {
+        if (!$this->checkAuth()) {
+            return redirect()->to(base_url('admin/login'));
+        }
+
+        $projectImageModel = new ProjectImageModel();
+        $image = $projectImageModel->find($imageId);
+        
+        if ($image) {
+            // Delete physical file
+            $filePath = FCPATH . $image['image_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            // Delete database record
+            $projectImageModel->delete($imageId);
+            $this->session->setFlashdata('success', 'Image deleted successfully.');
+        } else {
+            $this->session->setFlashdata('error', 'Image not found.');
         }
 
         return redirect()->to(base_url('admin/dashboard'));
