@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo mbstring xml intl
+RUN docker-php-ext-install pdo pdo_sqlite mbstring xml intl
 
 # Set working directory
 WORKDIR /app
