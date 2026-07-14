@@ -26,9 +26,11 @@ COPY --from=build /app /app
 # Set permissions
 RUN chmod -R 755 /app/writable
 
-# Enable error display for debugging
+# Enable error logging to file
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini \
-    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini \
+    && echo "log_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini \
+    && echo "error_log = /app/writable/logs/php_errors.log" >> /usr/local/etc/php/conf.d/docker-php-ext-error.ini
 
 EXPOSE 8080
 
