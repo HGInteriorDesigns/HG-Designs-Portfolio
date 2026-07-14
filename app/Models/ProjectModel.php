@@ -30,8 +30,12 @@ class ProjectModel extends Model
     {
         $project = $this->find($id);
         if ($project) {
-            $imageModel = new ProjectImageModel();
-            $project['images'] = $imageModel->getProjectImages($id);
+            try {
+                $imageModel = new ProjectImageModel();
+                $project['images'] = $imageModel->getProjectImages($id);
+            } catch (\Exception $e) {
+                $project['images'] = [];
+            }
         }
         return $project;
     }
@@ -42,10 +46,17 @@ class ProjectModel extends Model
     public function getAllWithImages()
     {
         $projects = $this->findAll();
-        $imageModel = new ProjectImageModel();
         
-        foreach ($projects as &$project) {
-            $project['images'] = $imageModel->getProjectImages($project['id']);
+        try {
+            $imageModel = new ProjectImageModel();
+            foreach ($projects as &$project) {
+                $project['images'] = $imageModel->getProjectImages($project['id']);
+            }
+        } catch (\Exception $e) {
+            // If project_images table doesn't exist, set empty images array
+            foreach ($projects as &$project) {
+                $project['images'] = [];
+            }
         }
         
         return $projects;
